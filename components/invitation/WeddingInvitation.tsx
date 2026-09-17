@@ -221,7 +221,7 @@ export default function WeddingInvitation({ guestLabel, rsvpHref, weddingData }:
           >
             <div className="welcome-photo-main">
               <Image
-                src={data.photos[1]}
+                src={data.photos[2]}
                 alt="Raveena and Roshana"
                 fill
                 priority
@@ -230,19 +230,6 @@ export default function WeddingInvitation({ guestLabel, rsvpHref, weddingData }:
               />
               <div className="welcome-photo-line" />
             </div>
-            <motion.div
-              className="welcome-photo-mini"
-              animate={reduceMotion ? undefined : { y: [0, -9, 0], rotate: [-1.5, 1, -1.5] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Image
-                src={data.photos[0]}
-                alt="Raveena and Roshana portrait"
-                fill
-                sizes="180px"
-                className="cover-image"
-              />
-            </motion.div>
             <div className="welcome-stamp">21 · 10 · 2026</div>
           </motion.div>
         </motion.div>
@@ -274,7 +261,7 @@ export default function WeddingInvitation({ guestLabel, rsvpHref, weddingData }:
           >
             <div className="story-photo-primary">
               <Image
-                src={data.photos[2]}
+                src={data.photos[1]}
                 alt="Raveena and Roshana together"
                 fill
                 sizes="(max-width: 900px) 92vw, 42vw"
@@ -439,37 +426,26 @@ export default function WeddingInvitation({ guestLabel, rsvpHref, weddingData }:
           <SectionHeading eyebrow="A few moments from us" title="Our Gallery" />
 
           <div className="gallery-grid">
-            {data.photos.slice(0, 5).map((src, index) => (
+            {data.galleryPhotos.map((src, index) => (
               <motion.div
                 className={`gallery-card gallery-card-${index + 1}`}
-                key={src}
-                initial={{ opacity: 0, y: 38, rotate: index % 2 ? 1.2 : -1.2 }}
+                key={`${src}-${index}`}
+                initial={{ opacity: 0, y: 38, rotate: index % 2 ? 0.8 : -0.8 }}
                 whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.82, delay: (index % 3) * 0.08, ease }}
+                viewport={{ once: true, amount: 0.16 }}
+                transition={{ duration: 0.82, delay: (index % 3) * 0.06, ease }}
               >
                 <Image
                   src={src}
                   alt={`Raveena and Roshana gallery photo ${index + 1}`}
                   fill
-                  sizes="(max-width: 700px) 92vw, 32vw"
+                  sizes="(max-width: 700px) 94vw, (max-width: 1100px) 46vw, 31vw"
                   className="cover-image"
+                  unoptimized={src.startsWith("http")}
                 />
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            className="gallery-action"
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease }}
-          >
-            <Link href="/gallery" className="outline-button">
-              View Full Gallery <span>→</span>
-            </Link>
-          </motion.div>
         </div>
       </section>
 
