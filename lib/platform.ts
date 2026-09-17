@@ -102,9 +102,34 @@ export async function listAdmins() {
     .select("user_id,wedding_id,wedding:weddings(id,slug,bride_name,groom_name)");
   if (assignmentError) throw assignmentError;
 
+  type AssignmentQueryRow = {
+    user_id: string;
+    wedding_id: string;
+    wedding:
+      | { id: string; slug: string; bride_name: string; groom_name: string }
+      | Array<{ id: string; slug: string; bride_name: string; groom_name: string }>
+      | null;
+  };
+
+  // Supabase may type an embedded relationship as an array. Cast the raw query
+  // result to the exact shape we expect, then normalize it to one wedding object.
+  const assignmentRows = (assignments ?? []) as unknown as AssignmentQueryRow[];
+
+  const normalizedAssignments: AssignmentRow[] = assignmentRows.map(
+    (assignment: AssignmentQueryRow): AssignmentRow => ({
+      user_id: assignment.user_id,
+      wedding_id: assignment.wedding_id,
+      wedding: Array.isArray(assignment.wedding)
+        ? (assignment.wedding[0] ?? null)
+        : (assignment.wedding ?? null),
+    }),
+  );
+
   return (data ?? []).map((profile: ProfileRow) => ({
     ...profile,
-    assignments: (assignments ?? []).filter((a: AssignmentRow) => a.user_id === profile.id),
+    assignments: normalizedAssignments.filter(
+      (assignment: AssignmentRow) => assignment.user_id === profile.id,
+    ),
   }));
 }
 
